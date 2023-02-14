@@ -21,27 +21,27 @@
             <th>
                 @Html.DisplayNameFor(model => model.Content)
             </th>
-@*            <th>
+            <th>
                 @Html.DisplayNameFor(model => model.Created)
-            </th>*@
-            @*<th>
+            </th>
+           <th>
             @Html.DisplayNameFor(model => model.Updated)
             </th>
             <th>
             @Html.DisplayNameFor(model => model.Slug)
             </th>
-            <th>
+            @*<th>
             @Html.DisplayNameFor(model => model.IsDeleted)
             </th>
             <th>
             @Html.DisplayNameFor(model => model.IsPublished)
-            </th>
+            </th>*@
             <th>
             @Html.DisplayNameFor(model => model.ImageData)
             </th>
             <th>
             @Html.DisplayNameFor(model => model.ImageType)
-            </th>*@
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Category)
             </th>
@@ -64,7 +64,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Content)
                 </td>
-@*                <td>
+               <td>
                     @Html.DisplayFor(modelItem => item.Created)
                 </td>
                 <td>
@@ -73,18 +73,18 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Slug)
                 </td>
-                <td>
+                @* <td>
                     @Html.DisplayFor(modelItem => item.IsDeleted)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.IsPublished)
-                </td>
+            </td>*@
                 <td>
                     @Html.DisplayFor(modelItem => item.ImageData)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ImageType)
-                </td>*@
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Category!.Name)
                 </td>

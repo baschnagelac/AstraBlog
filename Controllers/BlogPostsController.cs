@@ -13,6 +13,7 @@ using Azure.Identity;
 using ContactPro_Astra.Data;
 using System.Diagnostics;
 using System.Collections;
+using AstraBlog.Services.Interfaces;
 
 namespace AstraBlog.Controllers
 {
@@ -20,13 +21,12 @@ namespace AstraBlog.Controllers
     public class BlogPostsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<BlogUser> _userManager;
-        private IEnumerable tagList;
 
-        public BlogPostsController(ApplicationDbContext context, UserManager<BlogUser> userManager)
+
+        public BlogPostsController(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
+
         }
 
         // GET: BlogPosts
@@ -39,6 +39,13 @@ namespace AstraBlog.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        public async Task<IActionResult> AdminPage()
+        {
+
+
+            var blogPost = await _context.BlogPosts.Include(b => b.Category).ToListAsync();
+            return View(blogPost);
+        }
         // GET: BlogPosts/Details/5
         [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
@@ -132,7 +139,7 @@ namespace AstraBlog.Controllers
                 return RedirectToAction(nameof(Index));
             }
             //ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
-            ViewData["TagList"] = new MultiSelectList(tagList, "Id", "Name");
+        
 
             return View(blogPost);
         }
@@ -156,7 +163,7 @@ namespace AstraBlog.Controllers
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
 
-            ViewData["TagList"] = new MultiSelectList(tagList, "Id", "Name");
+      
 
 
 
@@ -204,7 +211,6 @@ namespace AstraBlog.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Name", blogPost.CategoryId);
-            ViewData["TagList"] = new MultiSelectList(tagList, "Id", "Name");
 
             return View(blogPost);
         }
