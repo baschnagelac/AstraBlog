@@ -12,6 +12,7 @@ namespace AstraBlog.Models
         public string? Name { get; set; }
 
         // navigation properties - ICollection (many blog posts)
+        //many -to-many relationship
 
         public virtual ICollection<BlogPost> BlogPosts { get; set; } = new HashSet<BlogPost>();
     }

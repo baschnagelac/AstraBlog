@@ -60,6 +60,8 @@ namespace AstraBlog.Controllers
         {
             if (ModelState.IsValid)
             {
+
+
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

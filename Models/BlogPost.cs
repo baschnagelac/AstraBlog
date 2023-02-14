@@ -5,6 +5,8 @@ namespace AstraBlog.Models
 {
     public class BlogPost
     {
+
+        //primary key
         public int Id { get; set; }
 
         [Required]
@@ -18,7 +20,7 @@ namespace AstraBlog.Models
         public string? Content { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime? Created { get; set; }
+        public DateTime Created { get; set; }
 
         [DataType(DataType.Date)]
         public DateTime? Updated { get; set; }
@@ -41,11 +43,17 @@ namespace AstraBlog.Models
 
         // navigation properties (many comments, many tags, one category)
 
+        //FK 1-to-1
+
         public int CategoryId { get; set; }
 
         public virtual Category? Category { get; set; }
 
+        //many-to-many
+
         public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
+
+        //1-to-many
 
         public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
 
