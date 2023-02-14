@@ -108,10 +108,6 @@ namespace AstraBlog.Controllers
                
                 
                 blogPost.Created = DataUtility.GetPostGresDate(DateTime.UtcNow);
-;
-
-                
-
 
 
                 //TODO: INSERT IMAGE SERVICE BELOW
