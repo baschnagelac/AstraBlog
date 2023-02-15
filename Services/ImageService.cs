@@ -4,18 +4,25 @@ namespace AstraBlog.Services
 {
     public class ImageService : IImageService
     {
-        private readonly string defaultImage = "/img/DefaultContactImage.png";
+        private readonly string _defaultUserImage = "/img/DefaultUserImage.jpg";
+        private readonly string _defaultBlogImage = "/img/DefaultBlogImage.jpg";
+        private readonly string _defaultCategoryImage = "/img/DefaultCategoryImage.jpg";
 
-        public string ConvertByteArrayToFile(byte[] fileData, string extension)
+        public string ConvertByteArrayToFile(byte[] fileData, string extension, int defaultImage)
         {
-            if (fileData == null)
+            if (fileData == null || fileData.Length == 0)
             {
-                return defaultImage;
+                switch (defaultImage)
+                {
+                    case 1: return _defaultUserImage;
+                    case 2: return _defaultBlogImage;
+                    case 3: return _defaultCategoryImage;
+                }
             }
 
             try
             {
-                string imageBase64Data = Convert.ToBase64String(fileData);
+                string imageBase64Data = Convert.ToBase64String(fileData!);
 
                 imageBase64Data = string.Format($"data:{extension};base64,{imageBase64Data}");
 

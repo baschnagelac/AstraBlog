@@ -1,4 +1,8 @@
 ﻿@model IEnumerable<AstraBlog.Models.BlogPost>
+@using AstraBlog.Enums;
+@using AstraBlog.Services.Interfaces
+
+@inject IImageService _ImageService
 
 <div class="axil-post-list-area axil-section-gap bg-color-white">
     <div class="container">
@@ -15,7 +19,7 @@
                     <div class="content-block post-list-view mt--30">
                         <div class="post-thumbnail">
                             <a asp-controller="BlogPosts" asp-action="Details" asp-route-slug="@blogPost.Slug">
-                                <img src="" alt="Post Images" />
+                                <img src="@_ImageService.ConvertByteArrayToFile(blogPost.ImageData!,blogPost.ImageType!,(int)DefaultImage.BlogPostImage)" alt="Post Images" />
                             </a>
                         </div>
                         <div class="post-content">
@@ -48,7 +52,7 @@
                                             <li>@blogPost.Comments.Count Comments</li>
                                         </ul>
 
-                                        <div class="fs-4">
+                                        <div class="fs-4 justify-content-end">
                                             <a class="me-3 editIcons" asp-action="Details" asp-route-id="@blogPost.Id"><i class="bi bi-info-circle text-info"></i></a>
                                             <a class="me-3 editIcons" asp-action="Edit" asp-route-id="@blogPost.Id"><i class="bi bi-pencil-fill text-warning "></i></a>
                                             <a class="me-3 editIcons" asp-action="Delete" asp-route-id="@blogPost.Id"><i class="bi bi-trash-fill text-danger "></i></a>

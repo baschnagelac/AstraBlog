@@ -1,4 +1,7 @@
 ﻿@model AstraBlog.Models.BlogPost
+@using AstraBlog.Services.Interfaces
+@using AstraBlog.Enums;
+@inject IImageService _ImageService
 
 @{
     ViewData["Title"] = "Edit";
@@ -8,7 +11,98 @@
 
 <h4>BlogPost</h4>
 <hr />
-<div class="row">
+<div class="post-single-wrapper axil-section-gap bg-color-white">
+    <div class="container">
+        <div class="row">
+            <form asp-action="Edit" enctype="multipart/form-data">
+                <div class="col-md-10">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Created" />
+                    <input type="hidden" asp-for="ImageData" />
+                    <input type="hidden" asp-for="ImageType" />
+                  
+
+                  
+                    <!-- Start Blog Details  -->
+                    <div class="axil-post-details">
+                        <h4 class="title">Add a new BlogPost</h4>
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <p class="comment-notes">
+                            <span id="email-notes">
+                                Create a new blog using the following fields.
+                            </span> Required items are marked <span class="required">*</span>
+                        </p>
+                        <div class="row row-cols-10">
+                            <div class="col-lg-8 col-md-8 col-12">
+                                <div class="form-group">
+                                    <label asp-for="Category" class="control-label"></label>
+                                    <br />
+                                    <select class="w-100" asp-for="CategoryId" asp-items="ViewBag.CategoryList"></select>
+                                    <span asp-validation-for="Category" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-12">
+                                <div class="form-group">
+                                    <label asp-for="Title" class="control-label"></label>
+                                    <input asp-for="Title" class="form-control" />
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-12">
+                                <div class="form-group">
+                                    <label asp-for="Abstract" class="control-label"></label>
+                                    <textarea asp-for="Abstract" class="form-control"></textarea>
+                                    <span asp-validation-for="Abstract" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-12">
+                                <div class="form-group">
+                                    <label asp-for="Tags" class="control-label"></label>
+                                    <select name="SelectedTags" class="form-control" asp-items="ViewBag.BlogPostTags" multiple></select>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-12">
+                                <div class="form-group">
+                                    <label asp-for="ImageFile" class="control-label"></label>
+                                    <input type="file" asp-for="ImageFile" class="form-control w-100" accept=".png,.jpg,.jpeg,.gif,.svg"
+                                           onchange="document.getElementById('imageData').src = window.URL.createObjectURL(this.files[0])" />
+                                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                </div>
+                                <div class="post-thumbnail">
+                                    <img id="imageData" src="@_ImageService.ConvertByteArrayToFile(Model.ImageData!,Model.ImageType!,(int)DefaultImage.BlogPostImage)" alt="Post Images" />
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-12">
+                                <div class="form-group">
+                                    <label asp-for="Content" class="control-label"></label>
+                                    <textarea asp-for="Content" class="form-control editor"></textarea>
+                                    <span asp-validation-for="Content" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-12">
+                                <div class="form-group">
+                                    <input class="" type="checkbox" asp-for="IsPublished" />
+                                    <label class="control-label" asp-for="IsPublished">Publish</label>
+                                    <span asp-validation-for="IsPublished" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-12">
+                                <div class="form-submit cerchio">
+                                    <input name="submit" type="submit" id="submit" class="axil-button button-rounded" value="Submit">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="axil-post-details">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@*<div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -73,7 +167,7 @@
             </div>
         </form>
     </div>
-</div>
+</div>*@
 
 <div>
     <a asp-action="Index">Back to List</a>
@@ -82,3 +176,19 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script src="~/ckeditor5/build/ckeditor.js"></script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('.editor'), {
+            licenseKey: '',
+        })
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(error => {
+            console.error('Oops, something went wrong!');
+            console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+            console.warn('Build id: xx09iayzufkn-lkt434h3lx2z');
+            console.error(error);
+        });
+</script>

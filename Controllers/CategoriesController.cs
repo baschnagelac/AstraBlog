@@ -7,36 +7,41 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AstraBlog.Data;
 using AstraBlog.Models;
+using AstraBlog.Services.Interfaces;
 
 namespace AstraBlog.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        
+        private readonly IImageService _imageService;
+        private readonly IBlogPostService _blogPostService;
 
-        public CategoriesController(ApplicationDbContext context)
+
+        public CategoriesController(IImageService imageService, IBlogPostService blogPostService)
         {
-            _context = context;
+           
+            _imageService = imageService;
+            _blogPostService = blogPostService;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-              return _context.Categories != null ? 
-                          View(await _context.Categories.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
+            var category = await _blogPostService.GetCategoriesAsync();
+            return View(category);
         }
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Categories == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _blogPostService.GetCategoryAsync(id.Value);
+                
             if (category == null)
             {
                 return NotFound();
@@ -61,9 +66,8 @@ namespace AstraBlog.Controllers
             if (ModelState.IsValid)
             {
 
+                await _blogPostService.AddCategoryAsync(category);
 
-                _context.Add(category);
-                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -72,12 +76,12 @@ namespace AstraBlog.Controllers
         // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Categories == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _blogPostService.GetCategoryAsync(id.Value);
             if (category == null)
             {
                 return NotFound();
@@ -101,12 +105,11 @@ namespace AstraBlog.Controllers
             {
                 try
                 {
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
+                    await _blogPostService.UpdateCategoryAsync(category);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
+                    if (! await CategoryExists(category.Id))
                     {
                         return NotFound();
                     }
@@ -123,13 +126,13 @@ namespace AstraBlog.Controllers
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Categories == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _blogPostService.GetCategoryAsync(id.Value);
+                
             if (category == null)
             {
                 return NotFound();
@@ -143,23 +146,23 @@ namespace AstraBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Categories == null)
+            if (id == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Categories'  is null.");
+                return NotFound();
             }
-            var category = await _context.Categories.FindAsync(id);
+            var category = await _blogPostService.GetCategoryAsync(id);
             if (category != null)
             {
-                _context.Categories.Remove(category);
+                await _blogPostService.DeleteCategoryAsync(category);
             }
             
-            await _context.SaveChangesAsync();
+            
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private async Task<bool> CategoryExists(int id)
         {
-          return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (await _blogPostService.GetCategoriesAsync()).Any(c => c.Id == id);
         }
     }
 }

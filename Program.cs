@@ -1,6 +1,8 @@
 using AstraBlog.Data;
 using AstraBlog.Models;
-using ContactPro_Astra.Data;
+using AstraBlog.Services.Interfaces;
+using AstraBlog.Services;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,9 +22,12 @@ builder.Services.AddIdentity<BlogUser, IdentityRole>(options => options.SignIn.R
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
+//custom services 
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IBlogPostService, BlogPostService>();
 
+builder.Services.AddMvc();
 
 var app = builder.Build();
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.Runtime.CompilerServices;
 
-namespace ContactPro_Astra.Data
+namespace AstraBlog.Data
 {
     public static class DataUtility
     {
