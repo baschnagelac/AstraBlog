@@ -46,6 +46,43 @@ namespace AstraBlog.Services
             }
         }
 
+
+        public async Task AddTagsToBlogPostAsync(string stringTags, int blogPostId)
+        {
+            try
+            {
+                BlogPost? blogPost = await _context.BlogPosts.FindAsync(blogPostId);
+
+                if (blogPost == null)
+                {
+                    return;
+                }
+
+                foreach (string tagName in stringTags.Split(","))
+                {
+                    Tag? tag = await _context.Tags.FirstOrDefaultAsync(t => t.Name.Trim().ToLower() == tagName.Trim().ToLower());
+
+                    if (tag != null)
+                    {
+                        blogPost.Tags.Add(tag);
+                    }
+                    else
+                    {
+                        Tag newTag = new Tag() { Name = tagName.Trim() };
+                        _context.Add(newTag);
+
+                        blogPost.Tags.Add(newTag);
+                    }
+                }
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task DeleteBlogPostAsync(BlogPost blogPost)
         {
             try
@@ -248,6 +285,23 @@ namespace AstraBlog.Services
             }
         }
 
+        public async Task<IEnumerable<Tag>> GetTagsAsync()
+        {
+            try
+            {
+                IEnumerable<Tag> tags = await _context.Tags
+                                                      .Include(t => t.BlogPosts)
+                                                      .ToListAsync();
+
+                return tags;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task UpdateBlogPostAsync(BlogPost blogPost)
         {
             try
@@ -300,7 +354,27 @@ namespace AstraBlog.Services
             }
         }
 
+        public async Task RemoveAllBlogPostTagsAsync(int blogPostId)
+        {
+            try
+            {
+                BlogPost? blogPost = await _context.BlogPosts
+                                                   .Include(b => b.Tags)
+                                                   .FirstOrDefaultAsync(b => b.Id == blogPostId);
 
+                if (blogPost != null)
+                {
+                    blogPost.Tags.Clear();
+                    _context.Update(blogPost);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
 

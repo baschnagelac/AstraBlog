@@ -22,14 +22,14 @@ namespace AstraBlog.Controllers
     [Authorize(Roles = "Admin")]
     public class BlogPostsController : Controller
     {
-        
+
         private readonly IImageService _imageService;
         private readonly IBlogPostService _blogPostService;
 
 
-        public BlogPostsController( IImageService imageService, IBlogPostService blogPostService)
+        public BlogPostsController(IImageService imageService, IBlogPostService blogPostService)
         {
-            
+
             _imageService = imageService;
             _blogPostService = blogPostService;
         }
@@ -56,7 +56,7 @@ namespace AstraBlog.Controllers
                 return NotFound();
             }
 
-            return View(blogPost); 
+            return View(blogPost);
         }
 
         // GET: BlogPosts/Create
@@ -65,11 +65,11 @@ namespace AstraBlog.Controllers
         public async Task<IActionResult> Create()
         {
 
-            
+
 
             ViewData["CategoryList"] = new SelectList(await _blogPostService.GetCategoriesAsync(), "Id", "Name");
 
-            
+
 
             //to do: tags
 
@@ -84,10 +84,10 @@ namespace AstraBlog.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,Created,Updated,Slug,IsDeleted,IsPublished,ImageFile,CategoryId")] BlogPost blogPost, IEnumerable<int> selected)
+        public async Task<IActionResult> Create([Bind("Id,Title,Abstract,Content,Created,Updated,Slug,IsDeleted,IsPublished,ImageFile,CategoryId")] BlogPost blogPost, string? stringTags)
         {
 
-
+            ModelState.Remove("Slug");
 
             if (ModelState.IsValid)
             {
@@ -122,14 +122,15 @@ namespace AstraBlog.Controllers
 
 
 
-                //TODO:  add tags to blogpost 
-
-
-
+                //  add tags to blogpost 
+                if(!string.IsNullOrWhiteSpace(stringTags))
+                {
+                    await _blogPostService.AddTagsToBlogPostAsync(stringTags, blogPost.Id);
+                }
 
                 return RedirectToAction(nameof(AdminPage));
             }
-            
+
 
 
             return View(blogPost);
@@ -151,7 +152,8 @@ namespace AstraBlog.Controllers
             }
             ViewData["CategoryList"] = new SelectList(await _blogPostService.GetCategoriesAsync(), "Id", "Name");
 
-
+            IEnumerable<string> tagNames = blogPost.Tags.Select(t => t.Name!);
+            ViewData["Tags"] = string.Join(", ", tagNames);
 
 
 
@@ -164,8 +166,11 @@ namespace AstraBlog.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Abstract,Content,Created,Updated,Slug,IsDeleted,IsPublished,ImageData,ImageType,ImageFile,CategoryId")] BlogPost blogPost, IEnumerable<int> selected)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Abstract,Content,Created,Updated,Slug,IsDeleted,IsPublished,ImageData,ImageType,ImageFile,CategoryId")] BlogPost blogPost, string? stringTags)
         {
+
+            
+
             if (id != blogPost.Id)
             {
                 return NotFound();
@@ -175,6 +180,17 @@ namespace AstraBlog.Controllers
             {
                 try
                 {
+                    //slug blogpost
+                    if (!await _blogPostService.ValidateSlugAsync(blogPost.Title!, blogPost.Id))
+                    {
+                        ModelState.AddModelError("Title", "A similar Title or Slug is already in use.");
+
+                        ViewData["CategoryList"] = new SelectList(await _blogPostService.GetCategoriesAsync(), "Id", "Name");
+                        return View(blogPost);
+                    }
+                    blogPost.Slug = StringHelper.BlogSlug(blogPost.Title!);
+
+                    //dates format
 
                     blogPost.Created = DataUtility.GetPostGresDate(blogPost.Created);
 
@@ -188,26 +204,24 @@ namespace AstraBlog.Controllers
                         blogPost.ImageType = blogPost.ImageFile.ContentType;
                     }
 
-                    //slug blogpost
-                    if (!await _blogPostService.ValidateSlugAsync(blogPost.Title!, blogPost.Id))
-                    {
-                        ModelState.AddModelError("Title", "A similar Title or Slug is already in use.");
 
-                        ViewData["CategoryList"] = new SelectList(await _blogPostService.GetCategoriesAsync(), "Id", "Name");
-                        return View(blogPost);
-                    }
-                    blogPost.Slug = StringHelper.BlogSlug(blogPost.Title!);
 
 
                     //call service to  update blog posts
                     await _blogPostService.UpdateBlogPostAsync(blogPost);
 
-                    //todo: edit tags
+                    // edit tags
+                    await _blogPostService.RemoveAllBlogPostTagsAsync(blogPost.Id);
+
+                    if (!string.IsNullOrWhiteSpace(stringTags))
+                    {
+                        await _blogPostService.AddTagsToBlogPostAsync(stringTags, blogPost.Id);
+                    }
 
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (! await BlogPostExists(blogPost.Id))
+                    if (!await BlogPostExists(blogPost.Id))
                     {
                         return NotFound();
                     }
@@ -216,7 +230,7 @@ namespace AstraBlog.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(AdminPage));
+                return RedirectToAction(nameof(AdminPage), new {Slug = blogPost.Slug });
             }
             ViewData["CategoryId"] = new SelectList(await _blogPostService.GetCategoriesAsync(), "Id", "Name");
 
@@ -226,7 +240,7 @@ namespace AstraBlog.Controllers
         // GET: BlogPosts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null )
+            if (id == null)
             {
                 return NotFound();
             }
