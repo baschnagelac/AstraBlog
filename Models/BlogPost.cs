@@ -25,7 +25,7 @@ namespace AstraBlog.Models
         [DataType(DataType.Date)]
         public DateTime? Updated { get; set; }
 
-        //TODO: make this required (slug)
+        [Required]
         public string? Slug { get; set; }
 
         [Display(Name = "Deleted?")]

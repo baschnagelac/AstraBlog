@@ -5,6 +5,7 @@ using AstraBlog.Services;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,11 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "custom",
+    pattern: "Content/{slug}", 
+    defaults: new { controller = "BlogPosts", action = "Details" });
 
 app.MapControllerRoute(
     name: "default",

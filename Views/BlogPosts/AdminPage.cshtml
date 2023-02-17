@@ -40,6 +40,7 @@
                             <div class="post-meta-wrapper">
                                 <div class="post-meta">
                                     <div class="content">
+                                        
                                         <h6 class="post-author-name">
                                             <a class="hover-flip-item-wrapper" href="author.html">
                                                 <span class="hover-flip-item">
@@ -51,9 +52,10 @@
                                             <li>@blogPost.Created.ToString("MMM dd, yyyy")</li>
                                             <li>@blogPost.Comments.Count Comments</li>
                                         </ul>
+                                        
 
-                                        <div class="fs-4 justify-content-end">
-                                            <a class="me-3 editIcons" asp-action="Details" asp-route-id="@blogPost.Id"><i class="bi bi-info-circle text-info"></i></a>
+                                        <div class="fs-1 mt-3 mb-0 pb-0 ">
+                                            <a class="me-3 editIcons" asp-controller="BlogPosts" asp-action="Details" asp-route-slug="@blogPost.Slug"><i class="bi bi-info-circle text-info"></i></a>
                                             <a class="me-3 editIcons" asp-action="Edit" asp-route-id="@blogPost.Id"><i class="bi bi-pencil-fill text-warning "></i></a>
                                             <a class="me-3 editIcons" asp-action="Delete" asp-route-id="@blogPost.Id"><i class="bi bi-trash-fill text-danger "></i></a>
 

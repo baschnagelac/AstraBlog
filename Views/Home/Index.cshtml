@@ -1,4 +1,9 @@
 ﻿@model IEnumerable<AstraBlog.Models.BlogPost>
+@using AstraBlog.Enums;
+@using AstraBlog.Services.Interfaces
+
+@inject IImageService _ImageService
+@inject IBlogPostService _BlogService
 
 <!-- Start Author Area  -->
 <div class="axil-author-area axil-author-banner bg-color-grey">
@@ -45,19 +50,13 @@
                 </div>
             </div>
             <div class="col-lg-8 col-xl-8">
-
-
-
-
                 @foreach (var blogPost in Model)
                 {
-
-
                     <!-- Start Post List  -->
                     <div class="content-block post-list-view mt--30">
                         <div class="post-thumbnail">
-                            <a href="post-details.html">
-                                <img src="~/assets//images/post-images/post-list-02.jpg" alt="Post Images">
+                            <a asp-action="Details" asp-controller="BlogPosts" asp-route-slug="@blogPost.Slug">
+                            <img src="~/assets/images/post-images/post-list-02.jpg" alt="Post Images">
                             </a>
                         </div>
                         <div class="post-content">
@@ -71,8 +70,8 @@
                                 </div>
                             </div>
                             <h4 class="title">
-                                <a href="post-details.html">
-                                 @blogPost.Title;
+                                <a asp-action="Details" asp-controller="BlogPosts" asp-route-slug="@blogPost.Slug">
+                                    @blogPost.Title;
                                 </a>
                             </h4>
                             <div class="post-meta-wrapper">
@@ -92,18 +91,16 @@
                                     </div>
                                 </div>
                                 @*<ul class="social-share-transparent justify-content-end">
-                                    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                    <li><a href="#"><i class="fas fa-link"></i></a></li>
-                                </ul>*@
+                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                            <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                            <li><a href="#"><i class="fas fa-link"></i></a></li>
+                            </ul>*@
                             </div>
                         </div>
                     </div>
                     <!-- End Post List  -->
                 }
-
-
             </div>
             <div class="col-lg-4 col-xl-4 mt_md--40 mt_sm--40">
                 <!-- Start Sidebar Area  -->
@@ -112,46 +109,19 @@
                     <!-- Start Single Widget  -->
                     <div class="axil-single-widget widget widget_categories mb--30">
                         <ul>
-                            <li class="cat-item">
-                                <a href="#" class="inner">
-                                    <div class="thumbnail">
-                                        <img src="~/assets//images/post-images/category-image-01.jpg" alt="">
-                                    </div>
-                                    <div class="content">
-                                        <h5 class="title">Tech</h5>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="cat-item">
-                                <a href="#" class="inner">
-                                    <div class="thumbnail">
-                                        <img src="~/assets//images/post-images/category-image-02.jpg" alt="">
-                                    </div>
-                                    <div class="content">
-                                        <h5 class="title">Style</h5>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="cat-item">
-                                <a href="#" class="inner">
-                                    <div class="thumbnail">
-                                        <img src="~/assets//images/post-images/category-image-03.jpg" alt="">
-                                    </div>
-                                    <div class="content">
-                                        <h5 class="title">Travel</h5>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="cat-item">
-                                <a href="#" class="inner">
-                                    <div class="thumbnail">
-                                        <img src="~/assets//images/post-images/category-image-04.jpg" alt="">
-                                    </div>
-                                    <div class="content">
-                                        <h5 class="title">Food</h5>
-                                    </div>
-                                </a>
-                            </li>
+                            @foreach (Category category in (await _BlogService.GetCategoriesAsync()).Take(4))
+                            {
+                                <li class="cat-item">
+                                    <a href="#" class="inner">
+                                        <div class="thumbnail">
+                                            <img src="@_ImageService.ConvertByteArrayToFile(category.ImageData!,category.ImageType!,(int)DefaultImage.CategoryImage)" alt="">
+                                        </div>
+                                        <div class="content">
+                                            <h5 class="title">@category.Name</h5>
+                                        </div>
+                                    </a>
+                                </li>
+                            }
                         </ul>
                     </div>
                     <!-- End Single Widget  -->
@@ -171,73 +141,32 @@
                         <h5 class="widget-title">Popular on Blogar</h5>
                         <!-- Start Post List  -->
                         <div class="post-medium-block">
-
+                            @foreach (BlogPost blogPost in (await _BlogService.GetPopularPostsAsync()).Take(3)) 
+                            {
                             <!-- Start Single Post  -->
                             <div class="content-block post-medium mb--20">
                                 <div class="post-thumbnail">
-                                    <a href="post-details.html">
+                                        <a asp-controller="BlogPosts" asp-action="Details" asp-route-slug="@blogPost.Slug">
                                         <img src="~/assets//images/small-images/blog-sm-01.jpg" alt="Post Images">
                                     </a>
                                 </div>
                                 <div class="post-content">
                                     <h6 class="title">
-                                        <a href="post-details.html">
-                                            The underrated design book that transformed the way I
-                                            work
+                                            <a asp-controller="BlogPosts" asp-action="Details" asp-route-slug="@blogPost.Slug">
+                                           @blogPost.Title
                                         </a>
                                     </h6>
                                     <div class="post-meta">
                                         <ul class="post-meta-list">
-                                            <li>Feb 17, 2019</li>
-                                            <li>300k Views</li>
+                                                <li>@blogPost.Created.ToString("MMM dd, yyyy")</li>
+                                            <li>@blogPost.Comments.Count Comments</li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <!-- End Single Post  -->
-                            <!-- Start Single Post  -->
-                            <div class="content-block post-medium mb--20">
-                                <div class="post-thumbnail">
-                                    <a href="post-details.html">
-                                        <img src="~/assets//images/small-images/blog-sm-02.jpg" alt="Post Images">
-                                    </a>
-                                </div>
-                                <div class="post-content">
-                                    <h6 class="title">
-                                        <a href="post-details.html">Here’s what you should (and shouldn’t) do when</a>
-                                    </h6>
-                                    <div class="post-meta">
-                                        <ul class="post-meta-list">
-                                            <li>Feb 17, 2019</li>
-                                            <li>300k Views</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Single Post  -->
-                            <!-- Start Single Post  -->
-                            <div class="content-block post-medium mb--20">
-                                <div class="post-thumbnail">
-                                    <a href="post-details.html">
-                                        <img src="~/assets//images/small-images/blog-sm-03.jpg" alt="Post Images">
-                                    </a>
-                                </div>
-                                <div class="post-content">
-                                    <h6 class="title">
-                                        <a href="post-details.html">
-                                            How a developer and designer duo at Deutsche Bank keep
-                                            remote
-                                        </a>
-                                    </h6>
-                                    <div class="post-meta">
-                                        <ul class="post-meta-list">
-                                            <li>Feb 17, 2019</li>
-                                            <li>300k Views</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Single Post  -->
+                            }
+
 
                         </div>
                         <!-- End Post List  -->

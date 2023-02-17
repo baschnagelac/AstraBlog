@@ -1,4 +1,5 @@
 ﻿using AstraBlog.Data;
+using AstraBlog.Helpers;
 using AstraBlog.Models;
 using AstraBlog.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -82,6 +83,25 @@ namespace AstraBlog.Services
                                                   .Include(b => b.Tags)
                                                   .Include(b => b.Comments)
                                                   .FirstOrDefaultAsync(b => b.Id == blogPostId);
+
+                return blogPost!;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<BlogPost> GetBlogPostAsync(string blogPostSlug)
+        {
+            try
+            {
+                BlogPost? blogPost = await _context.BlogPosts
+                                                  .Include(b => b.Category)
+                                                  .Include(b => b.Tags)
+                                                  .Include(b => b.Comments)
+                                                  .FirstOrDefaultAsync(b => b.Slug == blogPostSlug);
 
                 return blogPost!;
             }
@@ -249,6 +269,38 @@ namespace AstraBlog.Services
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> ValidateSlugAsync(string title, int blogId)
+        {
+            try
+            {
+                string newSlug = StringHelper.BlogSlug(title);
+
+                if(blogId == 0)
+                {
+                    return !await _context.BlogPosts.AnyAsync(b => b.Slug == newSlug);
+                } 
+                else
+                {
+                    BlogPost? blogPost = await _context.BlogPosts.AsNoTracking().FirstOrDefaultAsync(b => b.Id == blogId);
+
+                    string? oldSlug = blogPost?.Slug;
+
+                    if(!string.Equals(oldSlug, newSlug))
+                    {
+                        return !await _context.BlogPosts.AnyAsync(b => b.Id != blogPost!.Id && b.Slug == newSlug);
+                    }
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
     }
 }
 

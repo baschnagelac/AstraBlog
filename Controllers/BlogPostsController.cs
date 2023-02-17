@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Collections;
 using AstraBlog.Services.Interfaces;
 using AstraBlog.Services;
+using AstraBlog.Helpers;
 
 namespace AstraBlog.Controllers
 {
@@ -42,20 +43,20 @@ namespace AstraBlog.Controllers
         }
         // GET: BlogPosts/Details/5
         [AllowAnonymous]
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string slug)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(slug))
             {
                 return NotFound();
             }
 
-            var blogPost = await _blogPostService.GetBlogPostAsync(id.Value);
+            var blogPost = await _blogPostService.GetBlogPostAsync(slug);
             if (blogPost == null)
             {
                 return NotFound();
             }
 
-            return View(blogPost);
+            return View(blogPost); 
         }
 
         // GET: BlogPosts/Create
@@ -92,6 +93,18 @@ namespace AstraBlog.Controllers
             {
 
 
+                //slug blogpost
+                if (!await _blogPostService.ValidateSlugAsync(blogPost.Title!, blogPost.Id))
+                {
+                    ModelState.AddModelError("Title", "A similar Title or Slug is already in use.");
+
+                    ViewData["CategoryList"] = new SelectList(await _blogPostService.GetCategoriesAsync(), "Id", "Name");
+                    return View(blogPost);
+                }
+                blogPost.Slug = StringHelper.BlogSlug(blogPost.Title!);
+
+
+                //format date(s)
                 blogPost.Created = DataUtility.GetPostGresDate(DateTime.UtcNow);
 
 
@@ -114,9 +127,9 @@ namespace AstraBlog.Controllers
 
 
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(AdminPage));
             }
-            ViewData["CategoryList"] = new SelectList(await _blogPostService.GetCategoriesAsync(), "Id", "Name");
+            
 
 
             return View(blogPost);
@@ -175,8 +188,16 @@ namespace AstraBlog.Controllers
                         blogPost.ImageType = blogPost.ImageFile.ContentType;
                     }
 
+                    //slug blogpost
+                    if (!await _blogPostService.ValidateSlugAsync(blogPost.Title!, blogPost.Id))
+                    {
+                        ModelState.AddModelError("Title", "A similar Title or Slug is already in use.");
 
-                    //todo: slug
+                        ViewData["CategoryList"] = new SelectList(await _blogPostService.GetCategoriesAsync(), "Id", "Name");
+                        return View(blogPost);
+                    }
+                    blogPost.Slug = StringHelper.BlogSlug(blogPost.Title!);
+
 
                     //call service to  update blog posts
                     await _blogPostService.UpdateBlogPostAsync(blogPost);
@@ -195,7 +216,7 @@ namespace AstraBlog.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(AdminPage));
             }
             ViewData["CategoryId"] = new SelectList(await _blogPostService.GetCategoriesAsync(), "Id", "Name");
 
@@ -223,21 +244,21 @@ namespace AstraBlog.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var blogPost = await _blogPostService.GetBlogPostAsync(id);
+            var blogPost = await _blogPostService.GetBlogPostAsync(id.Value);
             if (blogPost != null)
             {
                 await _blogPostService.DeleteBlogPostAsync(blogPost);
             }
 
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AdminPage));
         }
 
         private async Task<bool> BlogPostExists(int id)
