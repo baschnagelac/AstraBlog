@@ -6,6 +6,8 @@
 
 <h1>Index</h1>
 
+
+
 <p>
     <a asp-action="Create">Create New</a>
 </p>
@@ -27,9 +29,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.BlogPost)
             </th>
-            <th>
+@*            <th>
                 @Html.DisplayNameFor(model => model.Author)
-            </th>
+            </th>*@
             <th></th>
         </tr>
     </thead>
@@ -37,7 +39,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Body)
+                @Html.Raw(item.Body)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Created)
@@ -49,11 +51,11 @@
                 @Html.DisplayFor(modelItem => item.UpdateReason)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.BlogPost.Content)
+                @Html.Raw(item.BlogPost.Content)
             </td>
-            <td>
+@*            <td>
                 @Html.DisplayFor(modelItem => item.Author.Id)
-            </td>
+            </td>*@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
@@ -63,3 +65,4 @@
 }
     </tbody>
 </table>
+

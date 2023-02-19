@@ -7,21 +7,26 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AstraBlog.Data;
 using AstraBlog.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace AstraBlog.Controllers
 {
     public class CommentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<BlogUser> _userManager;
 
-        public CommentsController(ApplicationDbContext context)
+        public CommentsController(ApplicationDbContext context, UserManager<BlogUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Comments
         public async Task<IActionResult> Index()
         {
+            string? userId = _userManager.GetUserId(User);
+            
             var applicationDbContext = _context.Comments.Include(c => c.Author).Include(c => c.BlogPost);
             return View(await applicationDbContext.ToListAsync());
         }
@@ -49,6 +54,8 @@ namespace AstraBlog.Controllers
         // GET: Comments/Create
         public IActionResult Create()
         {
+            string? userId = _userManager.GetUserId(User);
+            
             ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id");
             ViewData["BlogPostId"] = new SelectList(_context.BlogPosts, "Id", "Content");
             return View();
@@ -61,8 +68,16 @@ namespace AstraBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Body,Created,Updated,UpdateReason,BlogPostId,AuthorId")] Comment comment)
         {
+            ModelState.Remove("AuthorId");
+            
             if (ModelState.IsValid)
             {
+                comment.AuthorId = _userManager.GetUserId(User);
+
+               
+
+                comment.Created = DateTime.UtcNow;
+
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -85,6 +100,8 @@ namespace AstraBlog.Controllers
             {
                 return NotFound();
             }
+
+            string? userId = _userManager.GetUserId(User);
             ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", comment.AuthorId);
             ViewData["BlogPostId"] = new SelectList(_context.BlogPosts, "Id", "Content", comment.BlogPostId);
             return View(comment);
@@ -106,6 +123,8 @@ namespace AstraBlog.Controllers
             {
                 try
                 {
+                    string? authorId = _userManager.GetUserId(User);
+                    comment.Created = DateTime.SpecifyKind(comment.Created, DateTimeKind.Utc);
                     _context.Update(comment);
                     await _context.SaveChangesAsync();
                 }
