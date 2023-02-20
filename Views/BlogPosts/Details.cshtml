@@ -9,7 +9,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+
 
 
 <!-- Start Post Single Wrapper  -->
@@ -83,11 +83,14 @@
                     <p>@Html.Raw(Model.Content)</p>
                    
 
-                    <div class="tagcloud">
+                    <div class="tagcloud mt-3">
                         @foreach (Tag tag in await _BlogPostService.GetTagsAsync())
                         {
-                            <a href="#">@tag.Name</a> @*make a link to all posts with tag*@
+                            <a href="#">@tag.Name</a> @*make a link to all posts with tag comment below -- *@
                         }
+
+@*                        tag tag in model.tags
+                        <a asp-controller="Tags" asp-action="Details" asp-route-id="tag.Id">@tag.Name</a>*@
                         
                     </div>
 

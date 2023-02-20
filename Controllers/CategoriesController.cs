@@ -41,6 +41,7 @@ namespace AstraBlog.Controllers
             }
 
             var category = await _blogPostService.GetCategoryAsync(id.Value);
+            
                 
             if (category == null)
             {

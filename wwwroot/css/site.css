@@ -53,5 +53,8 @@ body {
     border-color: lightgray;
 }
 
-/*pagedlist pager style */
+.catareaimg {
+    height: 200px;
+    width: 200px;
+}
 

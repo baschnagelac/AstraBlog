@@ -57,5 +57,8 @@ namespace AstraBlog.Services.Interfaces
         //public IEnumerable<BlogPost> Search(string searchString);
 
         public Task<bool> ValidateSlugAsync(string title, int blogId);
+
+        public IEnumerable<BlogPost> SearchBlogPosts(string? searchString);
+
     }
 }
