@@ -7,28 +7,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AstraBlog.Data;
 using AstraBlog.Models;
+using AstraBlog.Services.Interfaces;
 
 namespace AstraBlog.Controllers
 {
     public class TagsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBlogPostService _blogPostService;
 
-        public TagsController(ApplicationDbContext context)
+        public TagsController(ApplicationDbContext context, IBlogPostService blogPostService)
         {
             _context = context;
+            _blogPostService = blogPostService;
         }
 
         // GET: Tags
         public async Task<IActionResult> Index()
         {
-              return _context.Tags != null ? 
-                          View(await _context.Tags.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Tags'  is null.");
+            IEnumerable<Tag> tag = await _blogPostService.GetTagsAsync();
+            return View(tag);
         }
 
         // GET: Tags/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? pageNum)
         {
             if (id == null || _context.Tags == null)
             {
@@ -36,11 +38,22 @@ namespace AstraBlog.Controllers
             }
 
             var tag = await _context.Tags
+                .Include(b => b.BlogPosts)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            //IEnumerable<Tag> tag = await _blogPostService.GetTagsAsync();
+
+
+
+
             if (tag == null)
             {
                 return NotFound();
             }
+
+            int page = pageNum ?? 1;
+            ViewData["Page"] = page;
+
 
             return View(tag);
         }
@@ -56,10 +69,11 @@ namespace AstraBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Tag tag)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Tag tag /*string stringTags, int blogpostId*/)
         {
             if (ModelState.IsValid)
             {
+                //await _blogPostService.AddTagsToBlogPostAsync(stringTags, blogpostId);
                 _context.Add(tag);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -75,7 +89,7 @@ namespace AstraBlog.Controllers
                 return NotFound();
             }
 
-            var tag = await _context.Tags.FindAsync(id);
+            var tag = await _blogPostService.GetTagsAsync();
             if (tag == null)
             {
                 return NotFound();

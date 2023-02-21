@@ -138,6 +138,7 @@ namespace AstraBlog.Services
                                                   .Include(b => b.Category)
                                                   .Include(b => b.Tags)
                                                   .Include(b => b.Comments)
+                                                        .ThenInclude(b => b.Author)
                                                   .FirstOrDefaultAsync(b => b.Slug == blogPostSlug);
 
                 return blogPost!;
@@ -181,7 +182,7 @@ namespace AstraBlog.Services
             try
             {
                 Category? category = await _context.Categories
-                                                   .Include(c => c.BlogPosts)
+                                                   .Include(c => c.BlogPosts) /*different table*/
                                                    .FirstOrDefaultAsync(b => b.Id == categoryId);
 
                 return category!;
@@ -294,7 +295,7 @@ namespace AstraBlog.Services
                                                       .Include(t => t.BlogPosts)
                                                       .ToListAsync();
 
-                return tags;
+                return tags!;
             }
             catch (Exception)
             {
@@ -302,6 +303,23 @@ namespace AstraBlog.Services
                 throw;
             }
         }
+
+        //public async Task<IEnumerable<Tag>> GetTagsAsync(int? tagId)
+        //{
+        //    try
+        //    {
+        //        IEnumerable<Tag> tags = await _context.Tags
+        //                                              .Include(t => t.BlogPosts)
+        //                                              .FirstOrDefaultAsync(t => t.Id == tagId);
+
+        //        return tags!;
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //}
 
         public async Task UpdateBlogPostAsync(BlogPost blogPost)
         {
@@ -419,6 +437,11 @@ namespace AstraBlog.Services
 
                 throw;
             }
+        }
+
+        public async Task AddCommentToBlogPost(string stringTags, int blogPostId)
+        {
+
         }
 
 

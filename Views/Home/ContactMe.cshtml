@@ -1,0 +1,48 @@
+﻿<h1>Hi! I'm here to chat! How can I help?</h1>
+<div class="container">
+    <form asp-action="ContactMe" asp-controller="Home" name="portfolioContact" method="POST" >
+        <div class="row g-2">
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="firstName">First Name</label>
+                <input class="form-control" type="text" id="firstName" placeholder="First name"
+                       aria-label="First name" name="firstName" required />
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="lastName">Last Name</label>
+                <input class="form-control" name="lastName" type="text" id="lastName"
+                       placeholder="Last name" aria-label="Last name" required />
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="email">Email</label>
+                <input class="form-control" name="email" type="email" id="email" placeholder="Email"
+                       aria-label="Email" required />
+            </div>
+            <div class="col-12 col-md-6">
+                <label class="form-label" for="phone">Phone (optional)</label>
+                <input class="form-control" name="phone" type="tel" id="phone" placeholder="Phone"
+                       aria-label="Phone" />
+            </div>
+            <div class="col-12">
+                <label class="form-label" for="subject">Subject</label>
+                <input class="form-control" name="subject" type="text" id="subject" placeholder="Subject"
+                       aria-label="Subject" required />
+            </div>
+
+            <div class="col-12">
+                <label class="form-label" for="message">
+                    Message
+                </label>
+                <textarea class="form-control" name="message" type="text" id="message" placeholder="Message"
+                          aria-label="Message" rows="4"></textarea>
+            </div>
+            <div class="col-12 text-end pt-2">
+                <button type="submit" class="btn btn-primary">
+                    Submit
+                </button>
+            </div>
+
+
+
+        </div>
+    </form>
+</div>

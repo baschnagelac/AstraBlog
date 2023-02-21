@@ -4,7 +4,99 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+@using AstraBlog.Enums;
+@using AstraBlog.Services.Interfaces
+@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+
+@inject IImageService _ImageService
+@inject IBlogPostService _BlogService
+
+
+@{
+    int pageSize = 3;
+    int pageNum = ViewBag.Page;
+
+    IPagedList<BlogPost> pageOfPosts = Model.BlogPosts
+                                            .Where(bp => bp.IsPublished == true && bp.IsDeleted == false)
+                                            .ToPagedList(pageNum, pageSize);
+}
+
+
+
+
+<!-- Start Tag Area  -->
+<div class="axil-author-area axil-author-banner bg-color-grey">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="about-author">
+                    <div class="media">
+                        <div class="thumbnail">
+                        </div>
+                        <div class="media-body">
+                            <div class="author-info">
+                                <h1 class="title"><a href="#">@Model.Name</a></h1>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End TAG Area  -->
+<!-- Start Post List Wrapper  -->
+<div class="axil-post-list-area axil-section-gap bg-color-white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-title">
+                    <h2 class="title mb--40">Articles Tagged with @Model.Name</h2>
+                </div>
+            </div>
+            <div class="col-lg-8 col-xl-8">
+                @foreach (BlogPost blogPost in pageOfPosts)
+                {
+                    <partial name="_BlogCard" model="@blogPost" />
+                }
+
+                <div>
+                    <div class="mt-3">
+                        Page @(pageOfPosts.PageCount < pageOfPosts.PageNumber ? 0 : pageOfPosts.PageNumber) of @pageOfPosts.PageCount
+                    </div>
+
+                    @Html.PagedListPager(pageOfPosts, pageNum => Url.Action("Details", new { id = Model.Id, pageNum = pageNum }),
+                    new PagedListRenderOptions
+                    {
+                    LiElementClasses = new string[] {"my-page-item"},
+                    PageClasses = new string[] {"my-page-link"}
+                    })
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 col-xl-4 mt_md--40 mt_sm--40">
+
+                <partial name="_Sidebar" />
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+@*<h1>Details</h1>
 
 <div>
     <h4>Tag</h4>
@@ -22,3 +114,4 @@
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+*@

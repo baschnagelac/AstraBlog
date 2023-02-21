@@ -1,6 +1,7 @@
 ﻿.my-page-item {
     display: inline-block;
     list-style: none;
+    font-size: 30px;
 }
 
 .my-page-link {
@@ -8,19 +9,20 @@
     width: 40px;
     height: 40px;
     line-height: 40px;
-    background-color: #fff;
+    background-color: #3c4731;
     text-align: center;
     text-decoration: none;
-    color: #252525;
-    border-radius: 4px;
+    color: #CD7F32;
+    filter: saturate(2);
+    border-radius: 50px;
     margin: 5px;
     box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.1), 0 2px 5px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
 }
 
 .my-page-item a.my-page-link:hover, a.my-page-link:active {
-    color: #fff;
-    background-color: #ff4242;
+    color: #CD7F32;
+    background-color: #D0F0C0;
 }
 
 .my-page-item my-page-link li:first-child a {

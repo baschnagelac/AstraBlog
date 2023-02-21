@@ -1,4 +1,10 @@
-﻿
+﻿@using AstraBlog.Enums;
+@using AstraBlog.Services.Interfaces
+
+
+@inject IImageService _ImageService
+@inject IBlogPostService _BlogService
+
 
 <!-- Start Author Area  -->
 <div class="axil-author-area axil-author-banner bg-color-grey">
@@ -9,16 +15,16 @@
                     <div class="media">
                         <div class="thumbnail">
                             <a href="#">
-                                <img src="~/assets//images/post-images/author/author-b1.png" alt="Author Images">
+                                <img class="mypic" src="~/img/profile_picBlog (1).jpg" alt="Author Images">
                             </a>
                         </div>
                         <div class="media-body">
                             <div class="author-info">
                                 <h1 class="title"><a href="#">Anna Baschnagel</a></h1>
-                                <span class="b3 subtitle">Jr. Software Dev</span>
+                                <span class="b3 subtitle">Jr. Software Developer</span>
                             </div>
                             <div class="content">
-                                <p class="b1 description">Junior Developer Blogger: ASP.NET MVC C# Javascript HTTML CSS Bootstrap 5</p>
+                                <p class="b1 description">I'm Anna and welcome to my blog, Coder Charm! Here at Coder Charm Blog, we share knowledge about full-stack development of websites and web applications. I am a graduate of Coder Foundry Bootcamp and my skills include both front-end & back-end development from the ground up. I am proficient in HTML5, CSS3, Bootstrap 5, Git, GitHub, JavaScript, ASP.NET, C#, and SQL. I am passionate about coding and building accessible web-applications. </p>
                                 <ul class="social-share-transparent size-md">
                                     <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
                                     <li><a href="#"><i class="fab fa-instagram"></i></a></li>

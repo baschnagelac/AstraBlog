@@ -11,7 +11,12 @@
 
 
 @{
-    ViewData["Title"] = "Details";
+    int pageSize = 3;
+    int pageNum = ViewBag.Page;
+
+    IPagedList<BlogPost> pageOfPosts = Model.BlogPosts
+                                            .Where(bp => bp.IsPublished == true && bp.IsDeleted == false)
+                                            .ToPagedList(pageNum, pageSize);
 }
 
 
@@ -26,30 +31,27 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="page-title">
-                    <h2 class="title mb--40">Articles in this Category</h2>
+                    <h2 class="title mb--40">Articles in @Model.Name Category</h2>
                 </div>
             </div>
             <div class="col-lg-8 col-xl-8">
-                @foreach (var blogPost in Model.BlogPosts)
+                @foreach (BlogPost blogPost in pageOfPosts)
                 {
                     <partial name="_BlogCard" model="@blogPost" />
                 }
 
-              @*  <div>
-                    <div>
-                        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+                <div>
+                    <div class="mt-3">
+                        Page @(pageOfPosts.PageCount < pageOfPosts.PageNumber ? 0 : pageOfPosts.PageNumber) of @pageOfPosts.PageCount
                     </div>
 
-                    @Html.PagedListPager(Model, pageNum => Url.Action("Details", new { pageNum }),
+                    @Html.PagedListPager(pageOfPosts, pageNum => Url.Action("Details", new { id = Model.Id, pageNum = pageNum }),
                     new PagedListRenderOptions
                     {
                     LiElementClasses = new string[] {"my-page-item"},
                     PageClasses = new string[] {"my-page-link"}
-                    }
-                    )
-
-
-                </div>*@
+                    })
+                </div>
 
             </div>
 
@@ -61,6 +63,14 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+
+
+
 <!-- End Post List Wrapper  -->
 @*<h1>Details</h1>
 
@@ -97,5 +107,4 @@
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
-</div>
-*@
+</div>*@
