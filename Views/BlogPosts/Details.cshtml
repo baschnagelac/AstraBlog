@@ -86,7 +86,7 @@
                     <div class="tagcloud mt-3">
                         @foreach (Tag tag in Model.Tags)
                         {
-                            <a asp-action="Details" asp-controller="Tags" asp-route-id="@tag.Id">@tag.Name</a>
+                            <a class="fs-6" asp-action="Details" asp-controller="Tags" asp-route-id="@tag.Id">@tag.Name</a>
                         }
 
 
@@ -100,8 +100,6 @@
                     <!-- Start Author  -->
                     <partial name="_AuthorArea" />
                     <!-- End Author  -->
-
-
                     <!-- Start Comment Form Area  -->
 
 
@@ -113,11 +111,13 @@
                             </div>
                         </div>
                         <div>
-                              <form asp-action="Create" asp-controller="Comments" asp-route-id="@Model.Comments">
+                            <form asp-action="Create" asp-controller="Comments" method="post">
+                                <input type="hidden" asp-for="Id" name="BlogPostId" />
+                                <input type="hidden" asp-for="Slug" />
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="message">Leave a Reply</label>
-                                        <textarea id="message" name="message"></textarea>
+                                        <textarea id="message" name="Body"></textarea>
                                     </div>
                                 </div>
 
@@ -130,134 +130,45 @@
                         </div>
 
                         <div class="axil-comment-area">
-                            <h4 class="title">@Model.Comments.Count</h4>
+                            <h4 class="title">@Model.Comments.Count comments</h4>
                             <ul class="comment-list">
-                                <!-- Start Single Comment  -->
-                                <li class="comment">
-                                    <div class="comment-body">
-                                        <div class="single-comment">
-                                            <div class="comment-img">
-                                                <img class="userimg" src="@_ImageService.ConvertByteArrayToFile(Model.ImageData!,Model.ImageType!,(int)DefaultImage.BlogUserImage)" alt="Author Images">
-                                            </div>
-                                            <div class="comment-inner">
-                                                <h6 class="commenter">
-                                                    <a class="hover-flip-item-wrapper" href="#">
-                                                        <span class="hover-flip-item">
-                                                            <span data-text="Cameron Williamson">Cameron Williamson</span>
-                                                        </span>
-                                                    </a>
-                                                </h6>
-                                                <div class="comment-meta">
-                                                    <div class="time-spent">Nov 23, 2018 at 12:23 pm</div>
-                                                    <div class="reply-edit">
-                                                        <div class="reply">
-                                                            <a class="comment-reply-link hover-flip-item-wrapper" href="#">
-                                                                <span class="hover-flip-item">
-                                                                    <span data-text="Reply">Reply</span>
-                                                                </span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
+                                @foreach (Comment comment in Model.Comments)
+                                {
+                                    <!-- Start Single Comment  -->
+                                    <li class="comment">
+                                        <div class="comment-body">
+                                            <div class="single-comment">
+                                                <div class="comment-img">
+                                                    <img class="userimg" src="@_ImageService.ConvertByteArrayToFile(comment.Author.ImageData!,comment.Author.ImageType!,(int)DefaultImage.BlogUserImage)" alt="Author Images">
                                                 </div>
-                                                <div class="comment-text">
-                                                    <p class="b2">
-                                                        Duis hendrerit velit scelerisque felis tempus, id porta
-                                                        libero venenatis. Nulla facilisi. Phasellus viverra
-                                                        magna commodo dui lacinia tempus. Donec malesuada nunc
-                                                        non dui posuere, fringilla vestibulum urna mollis.
-                                                        Integer condimentum ac sapien quis maximus.
-                                                    </p>
+                                                <div class="comment-inner">
+                                                    <h6 class="commenter">
+                                                        <a class="hover-flip-item-wrapper" href="#">
+                                                            <span class="hover-flip-item">
+                                                                <span data-text="@comment.Author.FullName">@comment.Author.FullName</span>
+                                                            </span>
+                                                        </a>
+                                                    </h6>
+                                                    <div class="comment-meta">
+                                                        <div class="time-spent">@comment.Created.ToString("MMM dd, yyyy hh:mm tt")</div>
+                                                    </div>
+                                                    <div class="comment-text">
+                                                        <p class="b2">
+                                                            @Html.Raw(comment.Body)
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <ul class="children">
-                                        <!-- Start Single Comment  -->
-                                        <li class="comment">
-                                            <div class="comment-body">
-                                                <div class="single-comment">
-                                                    <div class="comment-img">
-                                                        <img src="assets/images/post-images/author/author-b3.png" alt="Author Images">
-                                                    </div>
-                                                    <div class="comment-inner">
-                                                        <h6 class="commenter">
-                                                            <a class="hover-flip-item-wrapper" href="#">
-                                                                <span class="hover-flip-item">
-                                                                    <span data-text="Rahabi Khan">Rahabi Khan</span>
-                                                                </span>
-                                                            </a>
-                                                        </h6>
-                                                        <div class="comment-meta">
-                                                            <div class="time-spent">
-                                                                Nov 23, 2018 at 12:23 pm
-                                                            </div>
-                                                            <div class="reply-edit">
-                                                                <div class="reply">
-                                                                    <a class="comment-reply-link hover-flip-item-wrapper" href="#">
-                                                                        <span class="hover-flip-item">
-                                                                            <span data-text="Reply">Reply</span>
-                                                                        </span>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="comment-text">
-                                                            <p class="b2">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Suspendisse lobortis cursus lacinia. Vestibulum vitae leo id diam pellentesque ornare.</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <!-- End Single Comment  -->
-                                    </ul>
-                                </li>
-                                <!-- End Single Comment  -->
-                                <!-- Start Single Comment  -->
-                                <li class="comment">
-                                    <div class="comment-body">
-                                        <div class="single-comment">
-                                            <div class="comment-img">
-                                                <img src="assets/images/post-images/author/author-b2.png" alt="Author Images">
-                                            </div>
-                                            <div class="comment-inner">
-                                                <h6 class="commenter">
-                                                    <a class="hover-flip-item-wrapper" href="#">
-                                                        <span class="hover-flip-item">
-                                                            <span data-text="Rahabi Khan">Rahabi Khan</span>
-                                                        </span>
-                                                    </a>
-                                                </h6>
-                                                <div class="comment-meta">
-                                                    <div class="time-spent">Nov 23, 2018 at 12:23 pm</div>
-                                                    <div class="reply-edit">
-                                                        <div class="reply">
-                                                            <a class="comment-reply-link hover-flip-item-wrapper" href="#">
-                                                                <span class="hover-flip-item">
-                                                                    <span data-text="Reply">Reply</span>
-                                                                </span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="comment-text">
-                                                    <p class="b2">
-                                                        Duis hendrerit velit scelerisque felis tempus, id porta
-                                                        libero venenatis. Nulla facilisi. Phasellus viverra
-                                                        magna commodo dui lacinia tempus. Donec malesuada nunc
-                                                        non dui posuere, fringilla vestibulum urna mollis.
-                                                        Integer condimentum ac sapien quis maximus.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <!-- End Single Comment  -->
+                                    </li>
+                                    <!-- End Single Comment  -->
+                                }
                             </ul>
                         </div>
                         <!-- End Comment Area  -->
                     </div>
                     <!-- End Comment Form Area  -->
+
                 </div>
             </div>
             <div class="col-lg-4">

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AstraBlog.Models
 {
@@ -47,14 +48,15 @@ namespace AstraBlog.Models
 
         public int CategoryId { get; set; }
 
+        [JsonIgnore]
         public virtual Category? Category { get; set; }
 
         //many-to-many
-
+        [JsonIgnore]
         public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
 
         //1-to-many
-
+        [JsonIgnore]
         public virtual ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
 
 

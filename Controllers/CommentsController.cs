@@ -66,7 +66,7 @@ namespace AstraBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Body,Created,Updated,UpdateReason,BlogPostId,AuthorId")] Comment comment)
+        public async Task<IActionResult> Create([Bind("Id,Body,Created,Updated,UpdateReason,BlogPostId,AuthorId")] Comment comment, string? slug)
         {
             ModelState.Remove("AuthorId");
             
@@ -80,11 +80,9 @@ namespace AstraBlog.Controllers
 
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                
             }
-            ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", comment.AuthorId);
-            ViewData["BlogPostId"] = new SelectList(_context.BlogPosts, "Id", "Content", comment.BlogPostId);
-            return View(comment);
+            return RedirectToAction("Details", "BlogPosts", new { slug = slug });
         }
 
         // GET: Comments/Edit/5

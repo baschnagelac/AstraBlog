@@ -48,17 +48,24 @@ namespace AstraBlog.Services.Interfaces
 
         public Task RemoveAllBlogPostTagsAsync(int blogPostId);
 
-        //public Task AddTagsToBlogPostAsync(IEnumerable<int> tagsIds, int blogPostId);
 
         //public Task<bool> IsTagOnBlogPostAsync(int tagId, int blogPostId);
 
         //public Task RemoveAllBlogTagsAsync(int blogPostId);
 
-        //public IEnumerable<BlogPost> Search(string searchString);
+        //public Task GetTagAsync(int? id);
+
+        //public Task AddATagToBlogPostAsync(string stringTag, int blogPostId);
+
+       //public Task AddATag(string stringTag);
+
+        public Task<Tag> GetTagByIdAsync(int id);
 
         public Task<bool> ValidateSlugAsync(string title, int blogId);
 
         public IEnumerable<BlogPost> SearchBlogPosts(string? searchString);
+
+        public Task AddNewTagAsync(Tag tag);
 
     }
 }

@@ -25,11 +25,11 @@ namespace AstraBlog.Controllers
         // GET: Tags
         public async Task<IActionResult> Index()
         {
-            IEnumerable<Tag> tag = await _blogPostService.GetTagsAsync();
-            return View(tag);
+            IEnumerable<Tag> model = await _blogPostService.GetTagsAsync();
+            return View(model);
         }
 
-        // GET: Tags/Details/5
+        // GET: Tags/Details/5 details for one tag(id 5)
         public async Task<IActionResult> Details(int? id, int? pageNum)
         {
             if (id == null || _context.Tags == null)
@@ -37,13 +37,8 @@ namespace AstraBlog.Controllers
                 return NotFound();
             }
 
-            var tag = await _context.Tags
-                .Include(b => b.BlogPosts)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            //IEnumerable<Tag> tag = await _blogPostService.GetTagsAsync();
-
-
+            Tag tag = await _blogPostService.GetTagByIdAsync(id.Value);
+                 //tag, name, and posts related to that tag
 
 
             if (tag == null)
@@ -69,13 +64,14 @@ namespace AstraBlog.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Tag tag /*string stringTags, int blogpostId*/)
+        public async Task<IActionResult> Create([Bind("Id,Name")] Tag tag)
         {
             if (ModelState.IsValid)
             {
-                //await _blogPostService.AddTagsToBlogPostAsync(stringTags, blogpostId);
-                _context.Add(tag);
-                await _context.SaveChangesAsync();
+                
+                await _blogPostService.AddNewTagAsync(tag);   
+
+
                 return RedirectToAction(nameof(Index));
             }
             return View(tag);
@@ -84,12 +80,13 @@ namespace AstraBlog.Controllers
         // GET: Tags/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Tags == null)
+            if (id == null )
             {
                 return NotFound();
             }
 
-            var tag = await _blogPostService.GetTagsAsync();
+            Tag tag = await _blogPostService.GetTagByIdAsync(id.Value);
+
             if (tag == null)
             {
                 return NotFound();
@@ -115,6 +112,8 @@ namespace AstraBlog.Controllers
                 {
                     _context.Update(tag);
                     await _context.SaveChangesAsync();
+
+                    //method > ById > similar to create > code: above!! ^
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -139,7 +138,7 @@ namespace AstraBlog.Controllers
             {
                 return NotFound();
             }
-
+            //gettagbyidasync
             var tag = await _context.Tags
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (tag == null)
@@ -160,12 +159,14 @@ namespace AstraBlog.Controllers
                 return Problem("Entity set 'ApplicationDbContext.Tags'  is null.");
             }
             var tag = await _context.Tags.FindAsync(id);
-            if (tag != null)
-            {
-                _context.Tags.Remove(tag);
-            }
+            //if (tag != null)
+            //{
+            //    _context.Tags.Remove(tag);
+            //}
             
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
+
+            //call methods
             return RedirectToAction(nameof(Index));
         }
 

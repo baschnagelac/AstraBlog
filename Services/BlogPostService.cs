@@ -439,12 +439,42 @@ namespace AstraBlog.Services
             }
         }
 
-        public async Task AddCommentToBlogPost(string stringTags, int blogPostId)
-        {
+        //public async Task AddCommentToBlogPost(string stringTags, int blogPostId)
+        //{
 
+        //}
+
+        public async Task<Tag> GetTagByIdAsync(int id)
+        {
+            try
+            {
+                Tag? tag = await _context.Tags 
+                                        .Include(t => t.BlogPosts)
+                                            .ThenInclude(b => b.Category)
+                                        .FirstOrDefaultAsync(t => t.Id == id);
+
+                return tag!;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
+        public async Task AddNewTagAsync(Tag tag)
+        {
+            try
+            {
+                _context.Add(tag);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+        }
     }
 }
 
