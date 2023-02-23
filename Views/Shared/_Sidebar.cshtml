@@ -49,7 +49,7 @@
                 <div class="content-block post-medium mb--20">
                     <div class="post-thumbnail">
                         <a asp-controller="BlogPosts" asp-action="Details" asp-route-slug="@blogPost.Slug">
-                            <img src="~/assets//images/small-images/blog-sm-01.jpg" alt="Post Images">
+                            <img src="@_ImageService.ConvertByteArrayToFile(blogPost.ImageData!,blogPost.ImageType!,(int)DefaultImage.BlogPostImage)" alt="Post Images">
                         </a>
                     </div>
                     <div class="post-content">
@@ -89,7 +89,7 @@
         <!-- End Post List  -->
     </div>
     <!-- End Single Widget  -->
-    <!-- Start Single Widget  -->
+   @* <!-- Start Single Widget  -->
     <div class="axil-single-widget widget widget_instagram mb--30">
         <h5 class="widget-title">Instagram</h5>
         <!-- Start Post List  -->
@@ -127,6 +127,6 @@
         </ul>
         <!-- End Post List  -->
     </div>
-    <!-- End Single Widget  -->
+    <!-- End Single Widget  -->*@
 </div>
 <!-- End Sidebar Area  -->
