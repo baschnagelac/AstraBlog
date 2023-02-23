@@ -80,7 +80,7 @@
                         <img src="@_ImageService.ConvertByteArrayToFile(Model.ImageData!,Model.ImageType!,(int)DefaultImage.BlogPostImage)" alt="Post Images">
                         <figcaption>Photo Caption Goes Here</figcaption>
                     </figure>
-                    <p>@Html.Raw(Model.Content)</p>
+                    <p class="editor">@Html.Raw(Model.Content)</p>
 
 
                     <div class="tagcloud mt-3">

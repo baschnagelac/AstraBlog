@@ -43,7 +43,7 @@
             <div class="col-12 col-lg-8">
                 <div class="form-group">
                     <label asp-for="Content" class="control-label"></label>
-                    <textarea asp-for="Content" class="editor form-control"></textarea>
+                    <textarea asp-for="Content" class="editor form-control editor"></textarea>
                     <span asp-validation-for="Content" class="text-danger"></span>
                 </div>
                 <div class="form-group" id="tagContainer">
@@ -79,22 +79,7 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 
-    <script src="~/ckeditor5/build/ckeditor.js"></script>
-    <script>
-        ClassicEditor
-            .create(document.querySelector('.editor'), {
-                licenseKey: '',
-            })
-            .then(editor => {
-                window.editor = editor;
-            })
-            .catch(error => {
-                console.error('Oops, something went wrong!');
-                console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
-                console.warn('Build id: xx09iayzufkn-lkt434h3lx2z');
-                console.error(error);
-            });
-    </script>
+
 
     <script>
         function addTag(el) {
