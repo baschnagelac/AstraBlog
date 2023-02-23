@@ -1,4 +1,17 @@
-﻿<!doctype html>
+﻿@using AstraBlog.Enums;
+@using AstraBlog.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
+
+@inject IImageService _ImageService
+@inject IBlogPostService _BlogService
+@inject UserManager<BlogUser> _UserManager
+
+@{
+    BlogUser? blogUser = await _UserManager.GetUserAsync(User);
+}
+
+
+<!doctype html>
 <html class="no-js" lang="en">
 
 <head>
@@ -22,6 +35,8 @@
     <link rel="stylesheet" href="~/assets/css/vendor/base.css">
     <link rel="stylesheet" href="~/assets/css/plugins/plugins.css">
     <link rel="stylesheet" href="~/assets/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+
 
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
@@ -38,18 +53,18 @@
         <div class="mouse-cursor cursor-inner"></div>
 
         @*<div id="my_switcher" class="my_switcher">
-            <ul>
-                <li>
-                    <a href="javascript: void(0);" data-theme="light" class="setColor light">
-                        <span title="Light Mode">Light</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="javascript: void(0);" data-theme="dark" class="setColor dark">
-                        <span title="Dark Mode">Dark</span>
-                    </a>
-                </li>
-            </ul>
+        <ul>
+        <li>
+        <a href="javascript: void(0);" data-theme="light" class="setColor light">
+        <span title="Light Mode">Light</span>
+        </a>
+        </li>
+        <li>
+        <a href="javascript: void(0);" data-theme="dark" class="setColor dark">
+        <span title="Dark Mode">Dark</span>
+        </a>
+        </li>
+        </ul>
         </div>*@
 
         <!-- Start Header -->
@@ -174,12 +189,32 @@
                                 </form>
                             </div>
                             <ul class="metabar-block">
-                                @*                                <li class="icon"><a href="#"><i class="fas fa-bookmark"></i></a></li>
-                                <li class="icon"><a href="#"><i class="fas fa-bell"></i></a></li>*@
 
                                 @if (User.Identity.IsAuthenticated)
                                 {
-                                    <li><a href="javascript:document.getElementById('logoutForm').submit();"><img src="~/assets/images/others/author.png" alt="Author Images"></a></li>
+                                    <li class="nav-item dropdown has-arrow main-drop">
+                                        <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <span class="user-img">
+                                                <img src="@_ImageService.ConvertByteArrayToFile(blogUser!.ImageData!,blogUser!.ImageType!,(int)DefaultImage.BlogUserImage)" alt="">
+                                                <span class="status online"></span>
+                                            </span>
+                                            <span>@blogUser.FullName</span>
+                                        </a>
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <div class="dropdown-menu animate__slideInDown">
+                                                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">My Profile</a>
+                                                <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit();">Logout</a>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="dropdown-menu animate__slideInDown">
+                                                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Login">Sign In</a>
+                                                <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                                            </div>
+                                        }
+                                    </li>
                                 }
                                 else
                                 {
@@ -188,7 +223,9 @@
                                             <i class="fa fa-sign-in fa-2x" aria-hidden="true"></i>
                                         </a>
                                     </li>
+
                                 }
+
 
                             </ul>
                             <!-- Start Hamburger Menu  -->
@@ -287,13 +324,12 @@
                         <div class="col-lg-12">
                             <!-- Start Post List  -->
                             <div class="inner d-flex align-items-center flex-wrap">
-                                <h5 class="follow-title mb--0 mr--20">Follow Us</h5>
+                                @*<h5 class="follow-title mb--0 mr--20">Follow Us</h5>
                                 <ul class="social-icon color-tertiary md-size justify-content-start">
-                                    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                    <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
-                                </ul>
+                                    <li><a href="https://www.instagram.com/annabaschnagel/"><i class="fab fa-instagram"></i></a></li>
+                                    <li><a href="https://twitter.com/AnnaBaschnagel"><i class="fab fa-twitter"></i></a></li>
+                                    <li><a href="https://www.linkedin.com/in/anna-baschnagel-482b53261/"><i class="fab fa-linkedin-in"></i></a></li>
+                                </ul>*@
                             </div>
                             <!-- End Post List  -->
                         </div>
@@ -305,7 +341,7 @@
             <div class="copyright-area">
                 <div class="container">
                     <div class="row align-items-center">
-                        <div class="col-lg-9 col-md-12">
+                        <div class="col-lg-4 col-md-12">
                             <div class="copyright-left">
                                 <div>
                                     <a href="index.html">
@@ -314,6 +350,14 @@
                                     </a>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12">
+                            <h5 class="follow-title mb--1 mr--20 inner d-flex align-items-center flex-wrap">Follow Us</h5>
+                            <ul class="social-icon color-tertiary md-size justify-content-start">
+                                <li><a href="https://www.instagram.com/annabaschnagel/"><i class="fab fa-instagram"></i></a></li>
+                                <li><a href="https://twitter.com/AnnaBaschnagel"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="https://www.linkedin.com/in/anna-baschnagel-482b53261/"><i class="fab fa-linkedin-in"></i></a></li>
+                            </ul>
                         </div>
                         <div class="col-lg-3 col-md-12">
                             <div class="copyright-right text-start text-lg-end mt_md--20 mt_sm--20">
@@ -347,6 +391,7 @@
 
 
     <!-- Main JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/assets/js/main.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
