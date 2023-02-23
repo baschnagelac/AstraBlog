@@ -3,7 +3,7 @@ using MailKit.Security;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using System.Net.Mail;
+using MailKit.Net.Smtp;
 
 namespace AstraBlog.Services
 {
@@ -45,6 +45,7 @@ namespace AstraBlog.Services
                 var host = _mailSettings.EmailHost ?? Environment.GetEnvironmentVariable("EmailHost");
                 var port = _mailSettings.EmailPort != 0 ? _mailSettings.EmailPort : int.Parse(Environment.GetEnvironmentVariable("EmailPort")!);
                 var password = _mailSettings.EmailPassword ?? Environment.GetEnvironmentVariable("EmailPassword");
+
 
                 await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
                 await smtpClient.AuthenticateAsync(emailSender, password);
