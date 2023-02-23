@@ -475,6 +475,108 @@ namespace AstraBlog.Services
                 throw;
             }
         }
+
+        // VIS DIVIDER //////////////////////////////////////////////////////////////////////////////////
+
+        public async Task UpdateTagAsync(Tag tag)
+        {
+            try
+            {
+                _context.Update(tag);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task DeleteTagAsync(Tag tag)
+        {
+            try
+            {
+                _context.Tags.Remove(tag);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<Comment>> GetCommentsAsync()
+        {
+            try
+            {
+                IEnumerable<Comment> comments = await _context.Comments
+                                              .Include(c => c.Author)
+                                              .Include(c => c.BlogPost)
+                                              .ToListAsync();
+
+                return comments;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+                
+        }
+
+
+        public async Task AddNewCommentAsync(Comment comment)
+        {
+            try
+            {
+                _context.Add(comment);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task UpdateCommentAsync(Comment comment)
+        {
+            try
+            {
+                _context.Update(comment);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task DeleteCommentAsync(Comment comment)
+        {
+            try
+            {
+                _context.Comments.Remove(comment);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<Comment> GetCommentByIdAsync(int id)
+        {
+            Comment? comment = await _context.Comments
+                           .Include(c => c.Author)
+                           .Include(c => c.BlogPost)
+                           .FirstOrDefaultAsync(m => m.Id == id);
+
+            return comment!;
+        }
     }
 }
 

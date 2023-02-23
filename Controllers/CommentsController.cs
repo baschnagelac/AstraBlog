@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using AstraBlog.Data;
 using AstraBlog.Models;
 using Microsoft.AspNetCore.Identity;
+using AstraBlog.Services.Interfaces;
 
 namespace AstraBlog.Controllers
 {
@@ -15,34 +16,34 @@ namespace AstraBlog.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<BlogUser> _userManager;
+        private readonly IBlogPostService _blogPostService;
 
-        public CommentsController(ApplicationDbContext context, UserManager<BlogUser> userManager)
+        public CommentsController(ApplicationDbContext context, UserManager<BlogUser> userManager, IBlogPostService blogPostService)
         {
             _context = context;
             _userManager = userManager;
+            _blogPostService = blogPostService;
         }
 
         // GET: Comments
         public async Task<IActionResult> Index()
         {
             string? userId = _userManager.GetUserId(User);
-            
-            var applicationDbContext = _context.Comments.Include(c => c.Author).Include(c => c.BlogPost);
-            return View(await applicationDbContext.ToListAsync());
+
+            var comments = await _blogPostService.GetCommentsAsync();
+            return View(comments);
         }
 
         // GET: Comments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Comments == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var comment = await _context.Comments
-                .Include(c => c.Author)
-                .Include(c => c.BlogPost)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            Comment comment = await _blogPostService.GetCommentByIdAsync(id.Value);
+            
             if (comment == null)
             {
                 return NotFound();
@@ -56,8 +57,7 @@ namespace AstraBlog.Controllers
         {
             string? userId = _userManager.GetUserId(User);
             
-            ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["BlogPostId"] = new SelectList(_context.BlogPosts, "Id", "Content");
+
             return View();
         }
 
@@ -78,8 +78,8 @@ namespace AstraBlog.Controllers
 
                 comment.Created = DateTime.UtcNow;
 
-                _context.Add(comment);
-                await _context.SaveChangesAsync();
+                await _blogPostService.AddNewCommentAsync(comment);
+                
                 
             }
             return RedirectToAction("Details", "BlogPosts", new { slug = slug });
@@ -88,20 +88,19 @@ namespace AstraBlog.Controllers
         // GET: Comments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Comments == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var comment = await _context.Comments.FindAsync(id);
+            Comment comment = await _blogPostService.GetCommentByIdAsync(id.Value);
             if (comment == null)
             {
                 return NotFound();
             }
 
             string? userId = _userManager.GetUserId(User);
-            ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", comment.AuthorId);
-            ViewData["BlogPostId"] = new SelectList(_context.BlogPosts, "Id", "Content", comment.BlogPostId);
+
             return View(comment);
         }
 
@@ -123,12 +122,13 @@ namespace AstraBlog.Controllers
                 {
                     string? authorId = _userManager.GetUserId(User);
                     comment.Created = DateTime.SpecifyKind(comment.Created, DateTimeKind.Utc);
-                    _context.Update(comment);
-                    await _context.SaveChangesAsync();
+
+                    await _blogPostService.UpdateCommentAsync(comment);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CommentExists(comment.Id))
+                    if (! await CommentExists(comment.Id))
                     {
                         return NotFound();
                     }
@@ -139,8 +139,7 @@ namespace AstraBlog.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AuthorId"] = new SelectList(_context.Users, "Id", "Id", comment.AuthorId);
-            ViewData["BlogPostId"] = new SelectList(_context.BlogPosts, "Id", "Content", comment.BlogPostId);
+
             return View(comment);
         }
 
@@ -152,10 +151,7 @@ namespace AstraBlog.Controllers
                 return NotFound();
             }
 
-            var comment = await _context.Comments
-                .Include(c => c.Author)
-                .Include(c => c.BlogPost)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var comment = await _blogPostService.GetCommentByIdAsync(id.Value);
             if (comment == null)
             {
                 return NotFound();
@@ -171,21 +167,22 @@ namespace AstraBlog.Controllers
         {
             if (_context.Comments == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Comments'  is null.");
+                return NotFound();
             }
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _blogPostService.GetCommentByIdAsync(id);
+            
             if (comment != null)
             {
-                _context.Comments.Remove(comment);
+                await _blogPostService.DeleteCommentAsync(comment);
             }
             
-            await _context.SaveChangesAsync();
+            
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CommentExists(int id)
+        private async Task<bool> CommentExists(int id)
         {
-          return (_context.Comments?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (await _blogPostService.GetTagsAsync()).Any(e => e.Id == id);
         }
     }
 }

@@ -51,13 +51,8 @@ namespace AstraBlog.Services.Interfaces
 
         //public Task<bool> IsTagOnBlogPostAsync(int tagId, int blogPostId);
 
-        //public Task RemoveAllBlogTagsAsync(int blogPostId);
-
-        //public Task GetTagAsync(int? id);
-
-        //public Task AddATagToBlogPostAsync(string stringTag, int blogPostId);
-
-       //public Task AddATag(string stringTag);
+  
+    
 
         public Task<Tag> GetTagByIdAsync(int id);
 
@@ -67,5 +62,18 @@ namespace AstraBlog.Services.Interfaces
 
         public Task AddNewTagAsync(Tag tag);
 
+        public Task UpdateTagAsync(Tag tag);
+
+        public Task DeleteTagAsync(Tag tag);
+
+        public Task<IEnumerable<Comment>> GetCommentsAsync();
+
+        public Task<Comment> GetCommentByIdAsync(int id);
+
+        public Task AddNewCommentAsync(Comment comment);    
+
+        public Task UpdateCommentAsync(Comment comment);    
+
+        public Task DeleteCommentAsync(Comment comment);
     }
 }

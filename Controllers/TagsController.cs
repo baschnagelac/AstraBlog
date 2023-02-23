@@ -32,7 +32,7 @@ namespace AstraBlog.Controllers
         // GET: Tags/Details/5 details for one tag(id 5)
         public async Task<IActionResult> Details(int? id, int? pageNum)
         {
-            if (id == null || _context.Tags == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -110,14 +110,13 @@ namespace AstraBlog.Controllers
             {
                 try
                 {
-                    _context.Update(tag);
-                    await _context.SaveChangesAsync();
+                    await _blogPostService.UpdateTagAsync(tag);
 
-                    //method > ById > similar to create > code: above!! ^
+                 
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TagExists(tag.Id))
+                    if (! await TagExists(tag.Id))
                     {
                         return NotFound();
                     }
@@ -138,9 +137,9 @@ namespace AstraBlog.Controllers
             {
                 return NotFound();
             }
-            //gettagbyidasync
-            var tag = await _context.Tags
-                .FirstOrDefaultAsync(m => m.Id == id);
+          
+            var tag = await _blogPostService.GetTagByIdAsync(id.Value);
+            
             if (tag == null)
             {
                 return NotFound();
@@ -154,25 +153,26 @@ namespace AstraBlog.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Tags == null)
+            if (id == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Tags'  is null.");
+                return NotFound();
             }
-            var tag = await _context.Tags.FindAsync(id);
-            //if (tag != null)
-            //{
-            //    _context.Tags.Remove(tag);
-            //}
-            
-            //await _context.SaveChangesAsync();
+            var tag = await _blogPostService.GetTagByIdAsync(id);
+           
+            if (tag != null)
+            {
+                await _blogPostService.DeleteTagAsync(tag);
+            }
 
-            //call methods
+           
+
+            
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TagExists(int id)
+        private async Task<bool> TagExists(int id)
         {
-          return (_context.Tags?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (await _blogPostService.GetTagsAsync()).Any(t => t.Id == id);
         }
     }
 }
