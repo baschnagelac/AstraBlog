@@ -29,8 +29,10 @@ namespace AstraBlog.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(int? pageNum)
+        public async Task<IActionResult> Index(int? pageNum, string? swalMessage = null)
         {
+            ViewData["SwalMessage"] = swalMessage;
+
             int pageSize = 3;
             int page = pageNum ?? 1;
 
@@ -91,14 +93,14 @@ namespace AstraBlog.Controllers
                                                        "Contact me from my blog",
                                                        message!);
 
-                    swalMessage = "Success: Email Sent!";
+                    swalMessage = "Success: Message Sent!";
 
 
                     return RedirectToAction(nameof(Index), new { swalMessage });
                 }
                 catch (Exception)
                 {
-                    swalMessage = "Error: Email Send Failed!";
+                    swalMessage = "Error: Message Send Failed!";
                     return RedirectToAction(nameof(Index), new { swalMessage });
                     throw;
                 }

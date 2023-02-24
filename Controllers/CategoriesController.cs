@@ -70,6 +70,14 @@ namespace AstraBlog.Controllers
             if (ModelState.IsValid)
             {
 
+                // INSERT IMAGE SERVICE 
+
+                if (category.ImageFile != null)
+                {
+                    category.ImageData = await _imageService.ConvertFileToByteArrayAsync(category.ImageFile);
+                    category.ImageType = category.ImageFile.ContentType;
+                }
+
                 await _blogPostService.AddCategoryAsync(category);
 
                 return RedirectToAction(nameof(Index));
@@ -109,6 +117,13 @@ namespace AstraBlog.Controllers
             {
                 try
                 {
+
+                    if (category.ImageFile != null)
+                    {
+                        category.ImageData = await _imageService.ConvertFileToByteArrayAsync(category.ImageFile);
+                        category.ImageType = category.ImageFile.ContentType;
+                    }
+
                     await _blogPostService.UpdateCategoryAsync(category);
                 }
                 catch (DbUpdateConcurrencyException)
