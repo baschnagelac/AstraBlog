@@ -73,7 +73,7 @@
                 <div class="row justify-content-between align-items-center">
                     <div class="col-xl-3 col-lg-3 col-md-4 col-sm-3 col-12">
                         <div>
-                            <a href="index.html">
+                            <a asp-action="Index" asp-controller="Home">
 
                                 <img src="~/img/For Web/png/Black logo - no background.png" class="logostyle" alt="Logo Images" />
                             </a>
@@ -246,9 +246,9 @@
             <div class="inner">
                 <div class="mobile-menu-top">
                     <div class="logo">
-                        <a href="index.html">
-                            <img class="dark-logo" src="~/assets/images/logo/logo-black.png" alt="Logo Images">
-                            <img class="light-logo" src="~/assets/images/logo/logo-white2.png" alt="Logo Images">
+                        <a asp-action="Index" asp-controller="Home">
+
+                            <img src="~/img/for web/png/black logo - no background.png" alt="logo"/>
                         </a>
                     </div>
                     <div class="mobile-close">
@@ -259,16 +259,16 @@
                 </div>
                 <ul class="mainmenu">
                     <li class="menu-item-has-children">
-                        <a href="#">Home</a>
-                        <ul class="axil-submenu">
+                        <a asp-action="Index" asp-controller="Home">Home</a>
+@*                        <ul class="axil-submenu">
                             <li><a href="index.html">Home Default</a></li>
                             <li><a href="home-creative-blog.html">Home Creative Blog</a></li>
                             <li><a href="home-seo-blog.html">Home Seo Blog</a></li>
                             <li><a href="home-tech-blog.html">Home Tech Blog</a></li>
-                            <li><a href="home-lifestyle-blog.html">Home Lifestyle Blog</a></li>
-                        </ul>
+                            <li><a href="home-lifestyle-blog.html">Home Lifestyle Blog</a></li>*@
+                        @*</ul>*@
                     </li>
-                    <li class="menu-item-has-children">
+                  @*  <li class="menu-item-has-children">
                         <a href="#">Categories</a>
                         <ul class="axil-submenu">
                             <li><a href="post-details.html">Accessibility</a></li>
@@ -276,8 +276,8 @@
                             <li><a href="post-details.html">Accessibility</a></li>
                             <li><a href="post-details.html">Android Dev</a></li>
                         </ul>
-                    </li>
-                    <li class="menu-item-has-children">
+                    </li>*@
+@*                    <li class="menu-item-has-children">
                         <a href="#">Post Format</a>
                         <ul class="axil-submenu">
                             <li><a href="post-format-standard.html">Post Format Standard</a></li>
@@ -290,24 +290,25 @@
                             <li><a href="post-layout-4.html">Post Layout Four</a></li>
                             <li><a href="post-layout-5.html">Post Layout Five</a></li>
                         </ul>
-                    </li>
-                    <li class="menu-item-has-children">
-                        <a href="#">Pages</a>
-                        <ul class="axil-submenu">
-                            <li><a href="post-list.html">Post List</a></li>
-                            <li><a href="archive.html">Post Archive</a></li>
-                            <li><a href="author.html">Author Page</a></li>
-                            <li><a href="about.html">About Page</a></li>
-                            <li><a href="maintenance.html">Maintenance</a></li>
-                            <li><a href="contact.html">Contact Us</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="404.html">404 Page</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
+                    </li>*@
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="menu-item-has-children">
+                            <a href="#">Author</a>
+                            <ul class="axil-submenu">
+                                <li><a asp-controller="BlogPosts" asp-action="AdminPage">Admin</a></li>
+                                <li><a asp-controller="BlogPosts" asp-action="Create">New Post</a></li>
+                                <li><a asp-controller="BlogPosts" asp-action="AdminPage">Manage Posts</a></li>
+                                <li><a asp-controller="Categories" asp-action="Index">Manage Categories</a></li>
+                                <li><a asp-controller="Tags" asp-action="Index">Manage Tags</a></li>
+                            </ul>
+                        </li>
+                    }
+                    <li><a asp-action="MostPopular" asp-controller="Home">Most Popular Posts</a></li>
+                    <li><a asp-action="MostRecent" asp-controller="Home">Most Recent Posts</a></li>
+                    <li><a asp-action="EmailContact" asp-controller="Home">Contact Us</a></li>
+                    
                 </ul>
-                <div class="buy-now-btn">
-                    <a href="#">Buy Now <span class="badge">$15</span></a>
-                </div>
             </div>
         </div>
         <!-- End Mobile Menu Area  -->
@@ -344,7 +345,7 @@
                         <div class="col-lg-4 col-md-12">
                             <div class="copyright-left">
                                 <div>
-                                    <a href="index.html">
+                                    <a asp-action="Index" asp-controller="Home">
 
                                         <img src="~/img/For Web/png/Black logo - no background.png" class="logostyle" alt="Logo Images" />
                                     </a>
