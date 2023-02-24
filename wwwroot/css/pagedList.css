@@ -20,8 +20,10 @@
 }
 
 .my-page-item a.my-page-link:hover, a.my-page-link:active {
-    color: #232b2b;
+    color: #274f1c;
+    filter: saturate(3);
     background-color: #D0F0C0;
+    filter: saturate(3);
 }
 
 .my-page-item my-page-link li:first-child a {
