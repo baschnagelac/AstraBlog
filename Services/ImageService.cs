@@ -4,7 +4,7 @@ namespace AstraBlog.Services
 {
     public class ImageService : IImageService
     {
-        private readonly string _defaultUserImage = "/img/DefaultUserImage.jpg";
+        private readonly string _defaultUserImage = "/img/DefaultUserImage.png";
         private readonly string _defaultBlogImage = "/img/DefaultBlogImage.jpg";
         private readonly string _defaultCategoryImage = "/img/DefaultCategoryImage.jpg";
 

@@ -63,17 +63,17 @@ namespace AstraBlog.Areas.Identity.Pages.Account.Manage
 
             [Display(Name = "Last Name")]
             [StringLength(40, ErrorMessage = "The {0} must be at least {2} and at most {1} characters", MinimumLength = 2)]
-            public string? LastName { get; set; }
+            public string LastName { get; set; }
 
             // properties for storing image
-            public byte[]? ImageData { get; set; }
-            public string? ImageType { get; set; }
+            public byte[] ImageData { get; set; }
+            public string ImageType { get; set; }
 
             //property for passing file information from the form(html) to the post.
             //also not saved in the database via [not mapped] attribute
 
             [NotMapped]
-            public virtual IFormFile? ImageFile { get; set; }
+            public virtual IFormFile ImageFile { get; set; }
 
 
             /// <summary>
