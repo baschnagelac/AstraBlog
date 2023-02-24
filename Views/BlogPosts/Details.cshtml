@@ -104,7 +104,7 @@
                     <div class="axil-comment-area">
                         <div class="axil-total-comment-post">
                             <div class="title">
-                                <h4 class="mb--0">@Model.Comments.Count Comments</h4>
+                                <h4 class="mb--0">Comment Below</h4>
 
                             </div>
                         </div>
@@ -129,8 +129,18 @@
                                 </form>
                             </div>
                         }
-                        <div class="axil-comment-area">
-                            <h4 class="title">@Model.Comments.Count comments</h4>
+                        <div class="axil-comment-area mt-5">
+
+                            @if(Model.Comments.Count == 1)
+                            {
+                                <h4 class="title">@Model.Comments.Count comment</h4>
+                            }
+                            else
+                            {
+                                <h4 class="title">@Model.Comments.Count comments</h4>
+                            }
+
+                            
                             <ul class="comment-list">
                                 @foreach (Comment comment in Model.Comments)
                                 {
