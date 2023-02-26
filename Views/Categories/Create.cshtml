@@ -9,8 +9,10 @@
 <h4>Category</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data" method="post">
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="col-md-4">
+            <form asp-action="Create" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -43,6 +45,7 @@
             </div>
         </form>
     </div>
+    }
 </div>
 
 <div>
