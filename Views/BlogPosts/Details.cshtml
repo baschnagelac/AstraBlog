@@ -1,9 +1,18 @@
 ﻿@model AstraBlog.Models.BlogPost
 @using AstraBlog.Enums;
 @using AstraBlog.Services.Interfaces
+@using Microsoft.AspNetCore.Identity
 
 @inject IImageService _ImageService
 @inject IBlogPostService _BlogPostService
+@inject UserManager<BlogUser> _UserManager
+
+
+@{
+    BlogUser? blogUser = await _UserManager.GetUserAsync(User);
+}
+
+
 
 @{
     ViewData["Title"] = "Details";
@@ -41,7 +50,7 @@
                                         <div class="post-meta-wrapper">
                                             <div class="post-meta">
                                                 <div class="post-author-avatar border-rounded">
-                                                    <img class="userimg" src="@_ImageService.ConvertByteArrayToFile(Model.ImageData!,Model.ImageType!,(int)DefaultImage.BlogUserImage)" alt="Author Images">
+                                                    <img class="userimg" src="@_ImageService.ConvertByteArrayToFile(blogUser!.ImageData!,blogUser!.ImageType!,(int)DefaultImage.BlogUserImage)" alt="Author Images">
                                                 </div>
                                                 <div class="content">
                                                     <h6 class="post-author-name">
