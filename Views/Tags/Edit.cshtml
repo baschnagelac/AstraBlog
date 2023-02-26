@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Edit";
 }
-
+@if (User.IsInRole("Admin")) {
 <h1>Edit</h1>
 
 <h4>Tag</h4>
@@ -31,4 +31,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
 }

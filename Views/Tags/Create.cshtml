@@ -5,7 +5,7 @@
 }
 
 <h1>Create</h1>
-
+@if (User.IsInRole("Admin")) {
 <h4>Tag</h4>
 <hr />
 <div class="row">
@@ -30,4 +30,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
 }
